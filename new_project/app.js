@@ -3,11 +3,7 @@
 var http = require('http')
   , ss = require('socketstream');
 
-ss.client.define('main', {
-  view: 'app.jade',
-  css:  ['libs', 'app.styl'],
-  code: ['libs', 'modules', 'main']
-});
+ss.client.define('main');
 
 ss.http.router.on('/', function(req, res) {
   res.serve('main');
