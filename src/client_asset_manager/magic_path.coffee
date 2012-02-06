@@ -4,24 +4,31 @@
 # (in which case the contents of the dir will be expanded and served in alphanumeric order)
 
 require('colors')
+pathlib = require('path')
 fileUtils = require('../utils/file')
 
-exports.files = (prefix, paths = ['*']) ->
+exports.files = (prefix, paths = ['/']) ->
   files = []
   numRootFolders = prefix.split('/').length
 
   paths = [paths] unless paths instanceof Array
-  
+
   paths.forEach (path) ->
-    sp = path.split('/')
-    if sp[sp.length-1].indexOf('.') > 0
-      files.push(path)
-    else
-      dir = prefix
-      dir += ('/' + path) unless path == '*'
-      if tree = fileUtils.readDirSync(dir)
+    fullPath = pathlib.join(prefix, path)
+    basename = pathlib.basename(fullPath)
+
+    if (path.charAt(path.length-1) == '/') && fileUtils.isDir(fullPath)
+      # path is a specified directory
+      if tree = fileUtils.readDirSync(fullPath)
         tree.files.sort().forEach (file) ->
           files.push(file.split('/').slice(numRootFolders).join('/'))
       else
         console.log("!  error - /#{dir} directory not found".red)
+    else if basename.indexOf('.') == -1
+      # path is a file with no specific ext
+      ext = fileUtils.findExtForBasePath(fullPath)
+      files.push(path + ext) if ext
+    else if basename.indexOf('.') > 0
+      # path is a single specified file
+      files.push(path)
   files

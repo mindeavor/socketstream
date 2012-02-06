@@ -5,8 +5,11 @@
 
 log = console.log
 fs = require('fs')
+misc = require('../utils/misc')
+
 pathlib = require('path')
 magicPath = require('./magic_path')
+fileUtils = require('../utils/file')
 
 exports.init = (root, codeWrappers, templateEngine) ->
 
@@ -15,9 +18,12 @@ exports.init = (root, codeWrappers, templateEngine) ->
 
   class Client
 
-    constructor: (@name, @paths) ->
+    constructor: (@name, paths) ->
       @id = Number(Date.now())
-      @name = name
+      @paths = misc.defaults paths,
+        view: @name
+        css:  ['libs/', @name]
+        code: ['libs/', 'modules/', "#{@name}/"]
 
     # Generate JS/CSS Script/Link tags for inclusion in the client's HTML
     headers: (packAssets = false) ->
@@ -58,11 +64,13 @@ exports.init = (root, codeWrappers, templateEngine) ->
 
       outputView = ->
         view = paths.view
-        sp = view.split('.')
-        extension = sp[sp.length-1]
+        extension = pathlib.extname(view)
         path = pathlib.join(root, 'client/views', view)
+        if !extension
+          extension = fileUtils.findExtForBasePath(path)
+          path += extension
 
-        formatter = formatters[extension]
+        formatter = formatters[extension.substring 1]
         throw new Error("Unable to output view. Unsupported file extension #{extension}. Please provide a suitable formatter") unless formatter
         throw new Error("Unable to render view. #{formatter.name} is not a HTML formatter") unless formatter.assetType == 'html'
 
