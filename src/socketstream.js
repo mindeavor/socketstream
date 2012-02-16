@@ -51,6 +51,9 @@ var client = exports.client = require('./client_asset_manager/index').init(root,
 // Websocket Layer (transport, message responders, publish)
 var ws = exports.ws = require('./websocket/index').init(root, api);
 
+// Remote Console
+var consoleServer = exports.consoleServer = require('./console_server/index').init(this);
+
 // When server starts
 exports.start = function(httpServer) {
 
