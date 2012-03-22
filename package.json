@@ -19,11 +19,12 @@
     "eventemitter2":    "= 0.4.8",
     "apitree":          "= 1.0.0",
     "uglify-js":        "= 1.2.4",
-    "semver":           "= 1.0.13",  
+    "semver":           "= 1.0.13",
     "socket.io":        "= 0.9.1-1",
     "redis":            "= 0.7.1",
     "connect":          "= 2.0.2",
-    "connect-redis":    "= 1.2.0"
+    "connect-redis":    "= 1.2.0",
+    "detective":        "= 0.0.4"
   },
   "devDependencies": {
     "coffee-script":    "= 1.2.0",
